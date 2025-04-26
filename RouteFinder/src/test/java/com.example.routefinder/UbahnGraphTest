@@ -76,4 +76,16 @@ public class UbahnGraphTest {
         assertTrue(stationAHasB, "Oberlaa should have a connection to Neulaa");
         assertTrue(stationBHasA, "Neulaa should have a connection to Oberlaa");
     }
+
+ @Test
+    void testFindRoute() {
+        CsvLoader.loadFromCsv(graph, "vienna_subway.csv");
+
+        List<Station> route = graph.findRoute("Oberlaa", "Neulaa");
+
+        assertNotNull(route);
+        assertFalse(route.isEmpty(), "Route should not be empty");
+        assertEquals("Oberlaa", route.get(0).getName(), "Start station should be Oberlaa");
+        assertEquals("Neulaa", route.get(route.size() - 1).getName(), "End station should be Neulaa");
+    }
 }
