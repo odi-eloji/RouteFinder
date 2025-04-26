@@ -4,22 +4,27 @@ import java.util.List;
 
 public class Station {
     String name;
-    List<String> lines;
-    double latitude;
-    double longitude;
+     private List<Edge> neighbours; //list of outgoing connections
 
-    public Station(String name, List<String> lines, double latitude, double longitude) {
+    public Station(String name) {
         this.name = name;
-        this.lines = lines;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.neighbours = new ArrayList<>();
     }
 
-    public String addLine(List<String> lines) {
-        return null;
+    public String getName() {
+        return name;
     }
 
+    public List<Edge> getNeighbours() {
+        return neighbours;
+    }
 
+    public void addNeighbour(Edge edge) {
+        neighbours.add(edge);
+    }
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }
