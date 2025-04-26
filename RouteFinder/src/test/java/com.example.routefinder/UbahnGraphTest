@@ -1,0 +1,79 @@
+package com.example.routefinder;
+
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class UbahnGraphTest {
+
+    private UbahnGraph graph;
+
+    @BeforeEach
+    void setUp() {
+        graph = new UbahnGraph(); //create new graph b4 each test
+    }
+
+    @Test
+    void testAddStation() {
+        //Adding stations should work
+        Station stationA = graph.getOrCreateStation("Oberlaa");
+        Station stationB = graph.getOrCreateStation("Neulaa");
+
+        assertNotNull(stationA, "Station A name should not be null");
+        assertNotNull(stationB, "Station B name should not be null");
+
+        assertEquals("Oberlaa", stationA.getName(), "Station A name should be Oberlaa");
+        assertEquals("Neulaa", stationB.getName(), "Station B name should be Neulaa");
+    }
+
+    @Test
+    void testAddEdge() {
+        //Add stations and edge between them
+        Station stationA = graph.getOrCreateStation("Oberlaa");
+        Station stationB = graph.getOrCreateStation("Neulaa");
+        graph.addEdge(stationA, stationB, 1.0, "U1", "red");
+
+        //Check if the edge by verifying the neighbours list
+        assertFalse(stationA.getNeighbours().isEmpty(), "Station A should have at least 1 neighbour");
+        assertFalse(stationB.getNeighbours().isEmpty(), "Station B should have at least 1 neighbour");
+
+        //Assert that the edge connects the two stations in both directions
+        assertTrue(stationA.getNeighbours().stream().anyMatch(edge -> edge.getTo().equals(stationB)),
+                "Station A should have a neighbour to Station B");
+        assertTrue(stationB.getNeighbours().stream().anyMatch(edge -> edge.getTo().equals(stationA)),
+                "Station B should have a neighbour to Station A");
+    }
+
+    @Test
+    void testGetStation() {
+        //Add stations to the graph
+        Station stationA = graph.getOrCreateStation("Oberlaa");
+        Station stationB = graph.getOrCreateStation("Neulaa");
+
+        //Get stations back from the graph
+        Station retrievedStationA = graph.getStation("Oberlaa");
+        Station retrievedStationB = graph.getStation("Neulaa");
+
+        assertNotNull(retrievedStationA, "Retrieved Station A should not be null");
+        assertNotNull(retrievedStationB, "Retrieved Station B should not be null");
+        assertEquals("Oberlaa", retrievedStationA.getName(), "Retrieved Station A should be Oberlaa");
+        assertEquals("Neulaa", retrievedStationB.getName(), "Retrieved Station B should be Neulaa");
+    }
+
+    @Test
+    void testTwoWayConnection() {
+        //Add two stations and a two-way connection
+        Station stationA = graph.getOrCreateStation("Oberlaa");
+        Station stationB = graph.getOrCreateStation("Neulaa");
+        graph.addEdge(stationA, stationB, 1.0, "U1", "red");
+
+        //Check if both directions are connected
+        boolean stationAHasB = stationA.getNeighbours().stream().anyMatch(edge -> edge.getTo().getName().equals("Neulaa"));
+        boolean stationBHasA = stationB.getNeighbours().stream().anyMatch(edge -> edge.getTo().getName().equals("Oberlaa"));
+
+        assertTrue(stationAHasB, "Oberlaa should have a connection to Neulaa");
+        assertTrue(stationBHasA, "Neulaa should have a connection to Oberlaa");
+    }
+}
