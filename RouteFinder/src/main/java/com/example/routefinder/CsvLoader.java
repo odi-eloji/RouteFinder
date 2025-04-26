@@ -7,7 +7,14 @@ import java.io.IOException;
 public class CsvLoader {
 
     public static void loadFromCsv(UbahnGraph graph, String csvFilePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader("resources/vienna_subway.csv"))){
+        try {
+            InputStream is = CsvLoader.class.getClassLoader().getResourceAsStream(csvFilePath);
+
+            if (is == null) {
+                throw new IllegalArgumentException("File not Found: " +csvFilePath);
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line = br.readLine(); //skips header line (so it reads just the data)
 
             while ((line = br.readLine()) != null) {
