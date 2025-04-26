@@ -14,5 +14,16 @@ public class Main {
             }
             System.out.println("End");
         }
+
+        List<Station> route = graph.findRoute("Oberlaa", "Stadtpark");
+        if (!route.isEmpty()) {
+            System.out.println("Route found: ");
+            for (Station station : route) {
+                System.out.println(station.getName());
+            }
+        }
+        else {
+            System.out.println("No route found.");
+        }
     }
 }
