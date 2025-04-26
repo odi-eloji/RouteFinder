@@ -77,4 +77,48 @@ public class UbahnGraph {
         System.out.println("No route found");
         return null;
     }
+
+   //Find any route from start to end (DFS)
+    public List<Station> findRoute(String startName, String endName) {
+        Station start = getStation(startName);
+        Station end = getStation(endName);
+
+        if (start == null || end == null) {
+            System.out.println("Start or End station not found");
+            return Collections.emptyList();
+        }
+
+        List<Station> path = new ArrayList<>();
+        Set<Station> visited = new HashSet<>();
+
+        if (dfs(start, end, path, visited)) {
+            return path;
+        }
+        else {
+            System.out.println("No route found");
+            return Collections.emptyList();
+        }
+    }
+
+    //Helper DFS method
+    private boolean dfs(Station current, Station end, List<Station> path, Set<Station> visited) {
+        path.add(current);
+        visited.add(current);
+
+        if (current.equals(end)) {
+            return true;
+        }
+
+        for (Edge edge : current.getNeighbours()) {
+            Station neighbour = edge.getTo();
+            if (!visited.contains(neighbour)) {
+                if (dfs(neighbour, end, path, visited)) {
+                    return true;
+                }
+            }
+        }
+
+        path.remove(path.size() - 1); //backtrack
+        return false;
+    }
 }
