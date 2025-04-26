@@ -34,4 +34,47 @@ public class UbahnGraph {
     public Collection<Station> getAllStations() {
         return stations.values();
     }
+   
+   public List<Station> findRouteBFS(String startName, String endName) {
+        Station start = stations.get(startName);
+        Station end = stations.get(endName);
+
+        if (start == null || end == null) {
+            System.out.println("Start or End station not found");
+            return null;
+        }
+
+        //Set up a queue for BFS
+        Queue<List<Station>> queue = new LinkedList<>();
+        Set<Station> visited = new HashSet<>();
+
+        //Start with a path containing only the start station
+        List<Station> initialPath = new ArrayList<>();
+        initialPath.add(start);
+        queue.add(initialPath);
+
+        while (!queue.isEmpty()) {
+            List<Station> path = queue.poll();
+            Station current = path.get(path.size() - 1);
+
+            if (current.equals(end)) {
+                return path; //Found the destination
+            }
+
+            visited.add(current);
+
+            for (Edge edge : current.getNeighbours()) {
+                Station neighbour = edge.getTo();
+                if (!visited.contains(neighbour)) {
+                    List<Station> newPath = new ArrayList<>(path);
+                    newPath.add(neighbour);
+                    queue.add(newPath);
+                }
+            }
+        }
+
+        //If no path found
+        System.out.println("No route found");
+        return null;
+    }
 }
